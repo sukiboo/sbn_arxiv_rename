@@ -9,7 +9,7 @@ As we know, the papers downloaded from arXiv are named according to their identi
 1905.10409v2.pdf
 ```
 This script renames them according to the selected naming convention.
-Three naming formats are provided in the script (though they can be customized for a user's preference).
+Three naming formats are provided in the script (though they can be customized to a user's preference).
 ##### Format 1 (*default option*): `FirstAuthor_Year_Title.pdf`
 Only the first author's last name is used and all the spaces are replaced with underscores, i.e.
 ```
