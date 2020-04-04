@@ -1,8 +1,8 @@
 # sbn_arxiv_rename
-A script that renames papers downloaded from arxiv.org
+Rename and update papers downloaded from [arXiv.org](https://arxiv.org/).
 
 ### What it does
-Papers downloaded from [arxiv.org](https://arxiv.org/) are named according to their arxiv identifiers:
+As we know, the papers downloaded from arXiv are named according to their identifiers, which is not always convenient:
 ```
 2001.05530.pdf
 1905.06448v2.pdf
@@ -34,7 +34,7 @@ Anton Dereventsov, Armenak Petrosyan, Clayton Webster - Greedy Shallow Networks:
 
 ### How it works
 ##### Forming a new name
-The script extracts the arxiv identifier from the paper's name and uses it to retrieve the paper's metadata (authors, title, year) from [arxiv.org](https://arxiv.org/).
+The script extracts the arxiv identifier from the paper's name and uses it to retrieve the paper's metadata (authors, title, year) from [arXiv.org](https://arxiv.org/).
 The obtained metadata is used to rename the paper according to the selected naming format.
 ##### Updating papers
 Optionally, the script can update the papers to their latest versions.
