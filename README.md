@@ -46,9 +46,13 @@ The script adds `/arxiv_id` and `/updated` fields to every renamed paper's metad
 If the metadata for a paper was not obtained (e.g. due to incorrect arxiv identifier or corrupted metadata) the file is copied to the destination folder 'as is', i.e. without metadata changes or renaming.
 
 ### How to run it
-Just drop the file `sbn_arxiv_rename.py` into the folder with the arxiv papers and run it with Python, i.e.
+First, install the requirements specified in `requirements.txt`, e.g.
 ```
-python3 sbn_arxiv_rename.py
+pip install -r requirements.txt
+```
+Then just drop the file `sbn_arxiv_rename.py` into the folder with the arxiv papers and run it with Python, i.e.
+```
+python sbn_arxiv_rename.py
 ```
 The folder `arxiv_papers` will be created with the renamed/updated papers copied to it.
 The original pdf files are not changed and are left exactly where they were.
