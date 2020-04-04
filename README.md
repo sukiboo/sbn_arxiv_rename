@@ -34,17 +34,16 @@ Anton Dereventsov, Armenak Petrosyan, Clayton Webster - Greedy Shallow Networks:
 
 ### How it works
 ##### Forming a new name
-The script extracts the arxiv identifier from the paper's name and uses it to retrieve the paper's metadata (authors, title, year) from [arXiv.org](https://arxiv.org/).
-The obtained metadata is used to rename the paper according to the selected naming format.
-##### Updating papers
+The script extracts the arxiv identifier from either the file's name or metadata and uses it to retrieve the paper's metadata (authors, title, year) from [arXiv.org](https://arxiv.org/), which is used to rename the paper according to the selected naming format.
+##### Updating a paper
 Optionally, the script can update the papers to their latest versions.
-If the option `paper_update` is set to `True` (*default*), the most recent version of the paper will be downloaded from arxiv.
+If the option `paper_update` is set to `True` (*default*), the most recent version of the paper will be downloaded from arXiv.
 ##### Paper renaming and copying
-The renamed papers are copied to the destination folder (*defaults to* `./arxiv_papers/`) and the original pdf files are left intact.
+The renamed papers are copied to the destination folder (*defaults to* `./arxiv_papers/`), while the original pdf files are left intact.
 ##### Metadata changing
 The script adds `/arxiv_id` and `/updated` fields to every renamed paper's metadata so that those papers are recognized later regardless of their names.
 ##### If something went wrong
-If metadata for a paper was not obtained (e.g. due to incorrect arxiv identifier or corrupted metadata) the file is copied to the destination folder 'as-is', i.e. without renaming and metadata changes.
+If metadata for a paper was not obtained (e.g. due to incorrect arxiv identifier or corrupted metadata) the file is copied to the destination folder 'as-is', i.e. without renaming or metadata changes.
 
 ### How to run it
 Just drop the file `sbn_arxiv_rename.py` to the folder with the arxiv papers and run it with Python, i.e.
@@ -52,9 +51,9 @@ Just drop the file `sbn_arxiv_rename.py` to the folder with the arxiv papers and
 python3 sbn_arxiv_rename.py
 ```
 The folder `arxiv_papers` will be created with the renamed/updated papers copied to it.
-The original pdf files are not changed and left exactly where they were.
+The original pdf files are not changed and are left exactly where they were.
 
-Note that papers already processed by the script contain `/arxiv_id` and `/updated` fields in the metadata and thus can be run through the script again for the purpose of renaming and/or updating.
+Note that papers already processed by the script contain `/arxiv_id` and `/updated` fields in the metadata and thus can be run through the script again at any point for the purpose of renaming and/or updating.
 
 ### License
 This project is licensed under the [MIT License](https://mit-license.org/).
