@@ -9,7 +9,7 @@ As we know, the papers downloaded from arXiv are named according to their identi
 1905.10409v2.pdf
 ```
 This script renames them according to the selected naming convention.
-Three naming formats are provided in the script (though they can be customized to a user's preference).
+Three naming formats are provided in the script (though they can be customized to the user's preference).
 ##### Format 1 (*default option*): `FirstAuthor_Year_Title.pdf`
 Only the first author's last name is used and all the spaces are replaced with underscores, i.e.
 ```
@@ -43,10 +43,10 @@ The renamed papers are copied to the destination folder (*defaults to* `./arxiv_
 ##### Metadata changing
 The script adds `/arxiv_id` and `/updated` fields to every renamed paper's metadata so that those papers are recognized later regardless of their names.
 ##### If something went wrong
-If metadata for a paper was not obtained (e.g. due to incorrect arxiv identifier or corrupted metadata) the file is copied to the destination folder 'as-is', i.e. without renaming or metadata changes.
+If the metadata for a paper was not obtained (e.g. due to incorrect arxiv identifier or corrupted metadata) the file is copied to the destination folder 'as is', i.e. without metadata changes or renaming.
 
 ### How to run it
-Just drop the file `sbn_arxiv_rename.py` to the folder with the arxiv papers and run it with Python, i.e.
+Just drop the file `sbn_arxiv_rename.py` into the folder with the arxiv papers and run it with Python, i.e.
 ```
 python3 sbn_arxiv_rename.py
 ```
