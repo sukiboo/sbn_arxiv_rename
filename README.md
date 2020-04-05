@@ -2,7 +2,7 @@
 Rename and update papers downloaded from [arXiv.org](https://arxiv.org/).
 
 ### What it does
-As we know, the papers downloaded from arXiv are named according to their identifiers, which is not always convenient:
+The papers downloaded from arXiv are named according to their identifiers, which might not always be convenient:
 ```
 2001.05530.pdf
 1905.06448v2.pdf
