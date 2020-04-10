@@ -9,7 +9,7 @@ import os
 import arxiv
 import shutil
 import requests
-from PyPDF2 import PdfFileReader, PdfFileWriter
+from pdfrw import PdfReader, PdfWriter
 
 
 '''
@@ -19,9 +19,10 @@ from PyPDF2 import PdfFileReader, PdfFileWriter
 		- dir_path
 '''
 # select the paper naming convention:
-#	1 -- 'FirstAuthor_Year_Title.pdf'
+#	1 -- 'FirstAuthor_Year_Title.pdf' (default option)
 #	2 -- 'Authors - Title (Year).pdf' (authors truncated to 'et al.' if more than 2)
 #	3 -- custom format, configured below by modifying the 'name_format_3' function
+#			(defaults to 'Authors - Title.pdf' with no author list truncation)
 naming_convention = 1
 
 # enable/disable paper updates:
@@ -37,7 +38,7 @@ dir_path = './arxiv_papers/'
 # define 'FirstAuthor_Year_Title' naming format
 def name_format_1(authors, title, year):
 	authors = paper['authors'][0].split(' ')[-1]
-	title = title.replace(':', '')
+	title = title.replace(':', '').replace(',', '')
 	pdf_name = authors + ' ' + year + ' ' + title + '.pdf'
 	pdf_name = pdf_name.replace(' ', '_')
 	return pdf_name
@@ -87,56 +88,52 @@ else:
 ''' rename the papers '''
 # iterate over all pdf files
 for pdf in pdfs:
-	with open(pdf, 'rb') as pdf_current:
 
-		# try to retrieve the paper from arxiv
-		try:
-			# check if arxiv_id is in metadata
-			metadata = PdfFileReader(pdf_current).getDocumentInfo()
-			if '/arxiv_id' in metadata and '/updated' in metadata:
-				paper = arxiv.query(id_list=[metadata['/arxiv_id']])[0]
-				updated = metadata['/updated']
-			# else assume that arxiv_id is in the name
-			else:
-				paper = arxiv.query(id_list=[pdf[:-4].split('v')[0]])[0]
-				updated = ''
+	# try to retrieve the paper from arxiv
+	try:
+		# check if arxiv_id is in metadata
+		metadata = PdfReader(pdf).Info
+		if '/arxiv_id' in metadata and '/updated' in metadata:
+			paper = arxiv.query(id_list=[metadata['/arxiv_id'][1:-1]])[0]
+			updated = metadata['/updated'][1:-1]
+		# else assume that arxiv_id is in the name
+		else:
+			paper = arxiv.query(id_list=[pdf[:-4].split('v')[0]])[0]
+			updated = ''
 
-			# extract paper's metadata
-			# authors list
-			authors = paper['authors']
-			# title of the paper
-			title = ' '.join(paper['title'].split())
-			# year of original submission
-			year = str(paper['published_parsed'].tm_year)
-			# arxiv identifier
-			arxiv_id = paper['id'].split('/')[-1].split('v')[0]
+		# extract paper's metadata
+		# authors list
+		authors = paper['authors']
+		# title of the paper
+		title = ' '.join(paper['title'].split())
+		# year of original submission
+		year = str(paper['published_parsed'].tm_year)
+		# arxiv identifier
+		arxiv_id = paper['id'].split('/')[-1].split('v')[0]
 
-			# generate the new name for the paper
-			pdf_name = name_format(authors, title, year)
-			# download/rename the paper and update metadata
-			if paper_update and updated != paper['updated']:
-				# download the latest version of the paper
-				open(dir_path + pdf_name, 'wb').write(requests.get(paper['pdf_url']).content)
-				updated = paper['updated']
-				print('{:s} -- the latest version is downloaded from arxiv.org'.format(pdf))
-			else:
-				# copy and rename the paper
-				os.rename(shutil.copy2(pdf, dir_path), dir_path + pdf_name)
-				print('{:s} -- metadata is obtained from arxiv.org'.format(pdf))
+		# generate the new name for the paper
+		pdf_name = name_format(authors, title, year)
+		# download/rename the paper and update metadata
+		if paper_update and updated != paper['updated']:
+			# download the latest version of the paper
+			open(dir_path + pdf_name, 'wb').write(requests.get(paper['pdf_url']).content)
+			updated = paper['updated']
+			print('{:s} -- the latest version is downloaded from arxiv.org'.format(pdf))
+		else:
+			# copy and rename the paper
+			os.rename(shutil.copy2(pdf, dir_path), dir_path + pdf_name)
+			print('{:s} -- metadata is obtained from arxiv.org'.format(pdf))
 
-			# read and update the metadata
-			reader = PdfFileReader(dir_path + pdf_name)
-			metadata = reader.getDocumentInfo()
-			writer = PdfFileWriter()
-			writer.appendPagesFromReader(reader)
-			writer.addMetadata(metadata)
-			# add '/arxiv_id' and '/updated' to metadata
-			writer.addMetadata({'/arxiv_id': arxiv_id, '/updated': updated})
-			with open(dir_path + pdf_name, 'wb') as pdf_new:
-				writer.write(pdf_new)
+		# read and update the metadata
+		full_metadata = PdfReader(dir_path + pdf_name)
+		# add '/arxiv_id' and '/updated' to metadata
+		full_metadata.Info.arxiv_id = arxiv_id
+		full_metadata.Info.updated = updated
+		# save pdf with updated metadata
+		PdfWriter(dir_path + pdf_name, trailer=full_metadata).write()
 
-		# otherwise copy the paper without changes
-		except:
-			shutil.copy2(pdf, dir_path)
-			print('{:s} -- no relevant metadata is obtained'.format(pdf))
+	# otherwise copy the paper without changes
+	except:
+		shutil.copy2(pdf, dir_path)
+		print('{:s} -- no relevant metadata is obtained'.format(pdf))
 
